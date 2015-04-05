@@ -12,6 +12,14 @@ import org.bukkit.permissions.Permission;
  */
 public abstract class Weapon {
 
+    /**
+     * <ul>Weapon type enum</ul>
+     */
+
+    public enum WeaponType {
+        HEART_LASER, FIRE_LASER;
+    }
+
     @Getter (value = AccessLevel.PUBLIC)
     private ItemStack item;
     @Getter(value = AccessLevel.PUBLIC)

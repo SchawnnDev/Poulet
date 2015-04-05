@@ -11,6 +11,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
+/**
+ * Created by SchawnnDev on 04/04/2015.
+ * <ul>Particle class</ul>
+ */
+
 public class UtilParticle {
     private static Class<?> packetClass = null;
     private static Constructor<?> packetConstructor = null;
@@ -22,6 +27,10 @@ public class UtilParticle {
     private static boolean newParticlePacketConstructor = false;
     private static Class<Enum> enumParticle = null;
     private static boolean compatible = true;
+
+    /**
+     * <ul>Search packet and set the packet constructor</ul>
+     */
 
     static {
         String vString = getVersion().replace("v", "");
@@ -71,6 +80,13 @@ public class UtilParticle {
         return ((Enum[]) enumParticle.getEnumConstants())[id];
     }
 
+    /**
+     * <ul>Send the packet to the player</ul>
+     * @param p Packet receiver
+     * @param packet Packet to send to player
+     * @throws IllegalArgumentException Packet error or not found
+     */
+
     private static void sendPacket(Player p, Object packet)
             throws IllegalArgumentException {
         try {
@@ -92,6 +108,12 @@ public class UtilParticle {
         }
     }
 
+    /**
+     * <ul>*Reflection*, getHandle object</ul>
+     * @param entity Player
+     * @return getHandle object
+     */
+
     private static Object getHandle(Entity entity) {
         try {
             if (handles.get(entity.getClass()) != null) {
@@ -106,6 +128,12 @@ public class UtilParticle {
         return null;
     }
 
+    /**
+     * <ul>Get a nms class with name</ul>
+     * @param name The name of the nms class
+     * @return Class
+     */
+
     public static Class<Enum> getNmsClass(String name) {
         String version = getVersion();
         String className = "net.minecraft.server." + version + name;
@@ -117,6 +145,11 @@ public class UtilParticle {
         }
         return clazz;
     }
+
+    /**
+     * <ul>Get the version of bukkit/spigot</ul>
+     * @return Version of bukkit/spigot
+     */
 
     private static String getVersion() {
         String[] array = Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",");
@@ -153,6 +186,11 @@ public class UtilParticle {
         }
     }
 
+    /**
+     * <ul>Send the packet</ul>
+     * @param location Where the packet must be displayed
+     */
+
     public void sendToLocation(Location location) {
         try {
             Object packet = createPacket(location, false, 0);
@@ -163,6 +201,14 @@ public class UtilParticle {
             e.printStackTrace();
         }
     }
+
+    /**
+     * <ul>Create the particle packet</ul>
+     * @param location Where the packet must be displayed
+     * @param crack Iconcrack or not
+     * @param id Id of particle
+     * @return The particle packet
+     */
 
     private Object createPacket(Location location, boolean crack, int id) {
         try {
@@ -244,6 +290,10 @@ public class UtilParticle {
         }
         return null;
     }
+
+    /**
+     * <ul>Particle type enum</ul>
+     */
 
     public static enum Particle {
         EXPLOSION_NORMAL("explode", 0, 17),

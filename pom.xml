@@ -30,6 +30,8 @@
             <artifactId>lombok</artifactId>
             <version>1.12.6</version>
             <type>jar</type>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/lombok.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>net.minecraft.server.v1_8_R1</groupId>
