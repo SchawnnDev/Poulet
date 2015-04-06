@@ -36,7 +36,7 @@ public class Game {
     @Getter (value = AccessLevel.PUBLIC)
     public int birdsPerManche;
 
-    private List<Location> poulesSpawnLocations;
+    private List<Location> birdsSpawnLocations;
 
     private List<Integer> taskIdList;
 
@@ -61,7 +61,7 @@ public class Game {
         this.manches = manches;
         this.playerSpawnLocation = playerSpawnLocation;
         this.birdsPerManche = birdsPerManche;
-        this.poulesSpawnLocations = birdsSpawnLocations;
+        this.birdsSpawnLocations = birdsSpawnLocations;
         this.taskIdList = new ArrayList<>();
         this.isCurrentlyRunning = false;
         this.playersPlaying = new ArrayList<>();
@@ -115,6 +115,14 @@ public class Game {
 
             }
         }
+    }
+
+    /**
+     * <ul>Add point to player</ul>
+     */
+
+    public void addPoint(UUID uuid){
+
     }
 
 

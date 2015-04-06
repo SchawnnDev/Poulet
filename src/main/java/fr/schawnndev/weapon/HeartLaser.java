@@ -32,7 +32,7 @@ public class HeartLaser extends Weapon {
         BlockIterator lineOfSight = new BlockIterator(player, 15);
         int i = 0;
         while (lineOfSight.hasNext()) {
-            if (i > 5)
+            if (i > 15)
                 break;
             Block b = lineOfSight.next();
             blocks.add(b);
@@ -44,7 +44,7 @@ public class HeartLaser extends Weapon {
             for (Entity p2 : player.getWorld().getEntities()) {
                 if (p2.getLocation().distanceSquared(b.getLocation()) < 0.75 && p2 != player) {
                     if(p2 instanceof Chicken && Main.currentGame.birds.contains(p2)){
-
+                        
                     }
                 }
             }
