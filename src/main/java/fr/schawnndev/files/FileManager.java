@@ -20,10 +20,10 @@ public class FileManager {
      *  <ul>files, etc..</ul>
      */
 
-    @Getter (value = AccessLevel.PUBLIC)
+    @Getter
     private static File coords;
 
-    @Getter (value = AccessLevel.PUBLIC)
+    @Getter
     private static FileConfiguration coordsConfig;
 
     /**

@@ -3,6 +3,9 @@ package fr.schawnndev;
 import fr.schawnndev.files.FileManager;
 import fr.schawnndev.game.Game;
 import fr.schawnndev.game.GameManager;
+import lombok.Getter;
+import lombok.Setter;
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,9 +21,14 @@ import java.util.Random;
 public class Main extends JavaPlugin {
 
     public static Plugin instance;
-    public static Game currentGame;
-    public static Game defaultGame = new Game(0,0,0,null,null,0);
-    public static String prefix = "§6[§bPoulet§6] ";
+    @Getter
+    private static Game currentGame;
+    @Getter @Setter
+    private static Game defaultGame = new Game(0,0,0,null,null,0);
+    @Getter
+    private static String prefix = "§6[§bPoulet§6] ";
+    @Getter
+    private static Location spawn;
 
 
     public void onEnable() {
@@ -46,6 +54,10 @@ public class Main extends JavaPlugin {
 
     public void onDisable() {
 
+    }
+
+    public static void main(String[] args){
+        System.out.println(new Random().nextLong() * 1000);
     }
 
 }

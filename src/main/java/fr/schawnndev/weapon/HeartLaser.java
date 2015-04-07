@@ -43,7 +43,7 @@ public class HeartLaser extends Weapon {
             new UtilParticle(UtilParticle.Particle.HEART, 0.0D, 1, 0.0001D).sendToLocation(b.getLocation());
             for (Entity p2 : player.getWorld().getEntities()) {
                 if (p2.getLocation().distanceSquared(b.getLocation()) < 0.75 && p2 != player) {
-                    if(p2 instanceof Chicken && Main.currentGame.birds.contains(p2)){
+                    if(p2 instanceof Chicken && Main.getCurrentGame().getBirds().contains(p2)){
                         
                     }
                 }

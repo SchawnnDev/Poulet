@@ -5,9 +5,13 @@ import fr.schawnndev.weapon.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.UUID;
 
 /**
  * Created by SchawnnDev on 04/04/2015.
@@ -15,14 +19,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class GameManager {
 
-    @Getter (value = AccessLevel.PUBLIC)
-    @Setter (value = AccessLevel.PUBLIC)
-    private static Game currentGame = Main.defaultGame;
+    @Getter
+    @Setter
+    private static Game currentGame = Main.getDefaultGame();
 
-    @Getter (value = AccessLevel.PUBLIC)
+    @Getter
     private static Weapon heartLaserWeapon;
 
-    @Getter (value = AccessLevel.PUBLIC)
+    @Getter
     private static Weapon fireLaserWeapon;
 
 
@@ -43,5 +47,29 @@ public class GameManager {
         heartLaserWeapon = new HeartLaser(heartLaser, "§dHearthLaser", 1, null);
         fireLaserWeapon = new FireLaser(fireLaser, "§dFireLaser", 1, null);
     }
+
+    public static void broadcastMessage(Game game, String message){
+        for(UUID uuid : game.getPlayersPlaying()){
+            Player p = Bukkit.getPlayer(uuid);
+            p.sendMessage(message);
+        }
+    }
+
+    public static void broadcastMessageInCurrentGame(String message){
+        for(UUID uuid : Main.getCurrentGame().getPlayersPlaying()){
+            Player p = Bukkit.getPlayer(uuid);
+            p.sendMessage(message);
+        }
+    }
+
+    public static void broadcastMessageQuit(UUID uuid){
+        Player player = Bukkit.getPlayer(uuid);
+        for(UUID u : Main.getCurrentGame().getPlayersPlaying()){
+            Player p = Bukkit.getPlayer(uuid);
+            p.sendMessage("§c" +player.getName() + " §6has quit the game !");
+        }
+    }
+
+    
 
 }

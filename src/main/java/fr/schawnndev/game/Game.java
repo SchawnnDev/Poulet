@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,37 +28,50 @@ public class Game {
      * <ul>Variables..</ul>
      */
 
-    @Getter (value = AccessLevel.PUBLIC)
-    public int id;
+    @Getter
+    private int id;
 
-    @Getter (value = AccessLevel.PUBLIC)
-    public int manches;
+    @Getter
+    private int manches;
 
-    @Getter (value = AccessLevel.PUBLIC)
-    public Location playerSpawnLocation;
+    @Getter
+    private Location playerSpawnLocation;
 
-    @Getter (value = AccessLevel.PUBLIC)
-    public int birdsPerManche;
+    @Getter
+    private int birdsPerManche;
 
     private List<Location> birdsSpawnLocations;
 
     private List<Integer> taskIdList;
 
-    @Getter (value = AccessLevel.PUBLIC)
-    public boolean isCurrentlyRunning;
-
-    @Getter (value = AccessLevel.PUBLIC)
-    public List<UUID> playersPlaying;
-
-    @Getter (value = AccessLevel.PUBLIC)
-    public int maxPlayers;
+    @Getter
+    private boolean isCurrentlyRunning;
 
     @Getter
-    public List<Entity> birds;
+    private List<UUID> playersPlaying;
 
-    @Getter (value = AccessLevel.PUBLIC)
-    @Setter (value = AccessLevel.PUBLIC)
-    public int currentManche;
+    @Getter
+    private int maxPlayers;
+
+    @Getter
+    private List<Entity> birds;
+
+    @Getter
+    @Setter
+    private int currentManche;
+
+    @Getter
+    private List<Points> playerPoints;
+
+    private Random r;
+
+    private boolean isMancheCurrentlyRunning;
+
+    @Getter
+    private boolean isFinished;
+
+    @Getter
+    private UUID winner;
 
     public Game(int id, int manches, int birdsPerManche, Location playerSpawnLocation, List<Location> birdsSpawnLocations, int maxPlayers){
         this.id = id;
@@ -68,6 +85,10 @@ public class Game {
         this.maxPlayers = maxPlayers;
         this.birds = new ArrayList<>();
         this.currentManche = 1;
+        this.playerPoints = new ArrayList<>();
+        this.isMancheCurrentlyRunning = false;
+        this.r = new Random();
+        this.isFinished = false;
     }
 
     /**
@@ -75,18 +96,25 @@ public class Game {
      */
 
     public void start(){
-        final Random r = new Random();
         isCurrentlyRunning = true;
-       // final int mancheDuration = r.nextLong();
 
-        Bukkit.broadcastMessage(Main.prefix + "§7A game with §c" + manches + " §7will start in 20 seconds !");
-        Bukkit.broadcastMessage(Main.prefix + "§7Type §c/poulet join §7to join the game !");
+        Bukkit.broadcastMessage(Main.getPrefix() + "§7A game with §c" + getManches() + " §7will start in 20 seconds !");
+        Bukkit.broadcastMessage(Main.getPrefix() + "§7Type §c/poulet join §7to join the game !");
+
+        for(UUID uuid : getPlayersPlaying())
+            playerPoints.add(new Points(uuid, 0));
 
         taskIdList.add(Bukkit.getScheduler().runTaskTimer(Main.instance, new Runnable() {
 
             @Override
             public void run() {
+                if(getCurrentManche() == currentManche){
+                    finish();
+                }
 
+                if (!isMancheCurrentlyRunning) {
+                    startManche();
+                }
             }
 
         }, 20 * 10, 20L).getTaskId());
@@ -101,6 +129,37 @@ public class Game {
         for(int i : taskIdList)
             if(Bukkit.getScheduler().isCurrentlyRunning(i))
                 Bukkit.getScheduler().cancelTask(i);
+
+        for(UUID uuid : getPlayersPlaying()){
+            Player p = Bukkit.getPlayer(uuid);
+            p.teleport(Main.getSpawn());
+        }
+
+        this.getPlayersPlaying().clear();
+    }
+
+    /**
+     * <ul>Finish the game !</ul>
+     */
+
+    public void finish(){
+
+        Bukkit.broadcastMessage(Main.getPrefix() + "§c" + Bukkit.getPlayer(getWinner()).getName() + " §ahas won the game with §c" + getPlayerPoints().get(getWinner()).getPoints() + "§a birds killed!");
+
+        GameManager.broadcastMessageInCurrentGame("");
+
+        GameManager.broadcastMessageInCurrentGame("§6The game will stop in §c5 seconds §6!");
+
+        Bukkit.getScheduler().runTaskLater(Main.instance, new Runnable() {
+            @Override
+            public void run() {
+                stop();
+            }
+
+        }, 100L);
+
+
+
     }
 
     /**
@@ -108,20 +167,78 @@ public class Game {
      */
 
     public void addPlayer(UUID uuid){
-        if(this.playersPlaying.size() > this.maxPlayers){
+        if(getPlayersPlaying().size() > getMaxPlayers()){
             if(isCurrentlyRunning){
                 Player player = Bukkit.getPlayer(uuid);
-                player.teleport(this.playerSpawnLocation);
+                player.teleport(getPlayerSpawnLocation());
 
             }
         }
     }
 
     /**
-     * <ul>Add point to player</ul>
+     * <ul>Remove player</ul>
      */
 
-    public void addPoint(UUID uuid){
+    public void removePlayer(UUID uuid){
+        if(getPlayersPlaying().contains(uuid)) {
+            Player player = Bukkit.getPlayer(uuid);
+            player.getInventory().clear();
+            getPlayersPlaying().remove(uuid);
+            GameManager.broadcastMessageQuit(uuid);
+        }
+    }
+
+    /**
+     * <ul>Start new manche</ul>
+     */
+
+    public void startManche(){
+
+        isMancheCurrentlyRunning = true;
+
+        final World world = getPlayerSpawnLocation().getWorld();
+        final long time = 200 + r.nextInt(birdsPerManche * 14);
+
+        currentManche++;
+
+
+        GameManager.broadcastMessageInCurrentGame("§6Starting " + ((getCurrentManche() == getManches()) ? "§blatest§6" : "") + " manche §c" + getCurrentManche() + "§6....");
+
+        GameManager.broadcastMessageInCurrentGame("§6You have §c" + time / 20 + "§6 seconds for kill all the chickens !");
+
+
+       final int task = Bukkit.getScheduler().runTaskTimer(Main.instance, new BukkitRunnable() {
+
+            int currentBirds = 0;
+
+            @Override
+            public void run() {
+                if(currentBirds > getBirdsPerManche()) {
+
+                    cancel();
+
+                    GameManager.broadcastMessageInCurrentGame("§6Manche §c" +getCurrentManche() + " is finished !");
+
+                    Bukkit.getScheduler().runTaskLater(Main.instance, new Runnable() {
+
+                        public void run() {
+                            isMancheCurrentlyRunning = false;
+                        }
+
+                    }, 100L);
+
+                } else {
+                    Entity poulet = world.spawn(birdsSpawnLocations.get(r.nextInt(birdsSpawnLocations.size())), Chicken.class);
+                    poulet.setMetadata("poulet", new FixedMetadataValue(Main.instance, "poulet"));
+                    currentBirds++;
+                }
+
+            }
+
+        }, 0L, 20L).getTaskId();
+
+        taskIdList.add(task);
 
     }
 
