@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,6 +71,14 @@ public class GameManager {
         }
     }
 
-    
+    public static int getIntLocationInList(Object object, List<?> list){
+        for(int i = 0; i < list.size();i++)
+            if(list.get(i).equals(object))
+                return i;
+
+        return 0;
+    }
+
+
 
 }

@@ -144,7 +144,7 @@ public class Game {
 
     public void finish(){
 
-        Bukkit.broadcastMessage(Main.getPrefix() + "§c" + Bukkit.getPlayer(getWinner()).getName() + " §ahas won the game with §c" + getPlayerPoints().get(getWinner()).getPoints() + "§a birds killed!");
+        Bukkit.broadcastMessage(Main.getPrefix() + "§c" + Bukkit.getPlayer(getWinner()).getName() + " §ahas won the game with §c" + getPlayerPoints().get(GameManager.getIntLocationInList(getWinner(), getPlayerPoints())).getPoints() + "§a birds killed!");
 
         GameManager.broadcastMessageInCurrentGame("");
 
