@@ -57,9 +57,11 @@ public class GameManager {
     }
 
     public static void broadcastMessageInCurrentGame(String message){
-        for(UUID uuid : Main.getCurrentGame().getPlayersPlaying()){
-            Player p = Bukkit.getPlayer(uuid);
-            p.sendMessage(message);
+        for(UUID uuid : Main.getCurrentGame().getPlayersPlaying()) {
+            if (uuid != null) {
+                Player p = Bukkit.getPlayer(uuid);
+                p.sendMessage(message);
+            }
         }
     }
 

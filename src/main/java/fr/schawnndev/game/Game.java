@@ -89,6 +89,7 @@ public class Game {
         this.isMancheCurrentlyRunning = false;
         this.r = new Random();
         this.isFinished = false;
+        Main.setCurrentGame(this);
     }
 
     /**
@@ -98,7 +99,7 @@ public class Game {
     public void start(){
         isCurrentlyRunning = true;
 
-        Bukkit.broadcastMessage(Main.getPrefix() + "§7A game with §c" + getManches() + " §7will start in 20 seconds !");
+        Bukkit.broadcastMessage(Main.getPrefix() + "§7A game with §c" + getManches() + " manches §7will start in 20 seconds !");
         Bukkit.broadcastMessage(Main.getPrefix() + "§7Type §c/poulet join §7to join the game !");
 
         for(UUID uuid : getPlayersPlaying())
@@ -108,7 +109,7 @@ public class Game {
 
             @Override
             public void run() {
-                if(getCurrentManche() == currentManche){
+                if(getCurrentManche() == getManches()){
                     finish();
                 }
 
@@ -167,11 +168,11 @@ public class Game {
      */
 
     public void addPlayer(UUID uuid){
-        if(getPlayersPlaying().size() > getMaxPlayers()){
+        if(getPlayersPlaying().size() < getMaxPlayers()){
             if(isCurrentlyRunning){
                 Player player = Bukkit.getPlayer(uuid);
                 player.teleport(getPlayerSpawnLocation());
-
+                getPlayersPlaying().add(uuid);
             }
         }
     }
@@ -203,7 +204,7 @@ public class Game {
         currentManche++;
 
 
-        GameManager.broadcastMessageInCurrentGame("§6Starting " + ((getCurrentManche() == getManches()) ? "§blatest§6" : "") + " manche §c" + getCurrentManche() + "§6....");
+        GameManager.broadcastMessageInCurrentGame("§6Starting " + (((getCurrentManche() == getManches()) ? "§blatest§6" : "")) + " manche §c" + getCurrentManche() + "§6....");
 
         GameManager.broadcastMessageInCurrentGame("§6You have §c" + time / 20 + "§6 seconds for kill all the chickens !");
 

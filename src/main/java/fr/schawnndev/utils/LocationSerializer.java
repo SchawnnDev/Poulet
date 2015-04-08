@@ -13,9 +13,9 @@ public class LocationSerializer {
        String loc = null;
 
        if(pitchAndYaw)
-           loc = "" + location.getWorld().toString() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
+           loc = "" + location.getWorld().getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ() + " " + location.getYaw() + " " + location.getPitch();
         else
-           loc = "" + location.getWorld().toString() + " " + location.getX() + " " + location.getY() + " " + location.getZ();
+           loc = "" + location.getWorld().getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ();
 
         return loc;
     }

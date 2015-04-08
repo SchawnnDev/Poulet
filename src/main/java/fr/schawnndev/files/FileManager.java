@@ -32,15 +32,17 @@ public class FileManager {
 
     public static void init() throws FileNotFoundException {
 
-        coords = new File(Main.instance.getDataFolder().getAbsolutePath() + File.pathSeparator + "coords.yml");
+        coords = new File(Main.instance.getDataFolder().getPath() + "/coords.yml");
+        File pluginFolder = new File(Main.instance.getDataFolder().getPath());
 
-        if(!coords.exists()){
             try {
-                coords.createNewFile();
+                if(!pluginFolder.exists())
+                    pluginFolder.mkdirs();
+                if(!coords.exists())
+                    coords.createNewFile();
             } catch (IOException e){
                 e.printStackTrace();
             }
-        }
 
         coordsConfig = YamlConfiguration.loadConfiguration(coords);
 
@@ -50,7 +52,7 @@ public class FileManager {
      * <ul>Save the coords.yml file</ul>
      */
 
-    private static void save(){
+    public static void save(){
         try {
             coordsConfig.save(coords);
         } catch (IOException e){
@@ -62,7 +64,7 @@ public class FileManager {
      * <ul>Reload the coords.yml file</ul>
      */
 
-    private static void reload(){
+    public static void reload(){
         try {
            init();
         } catch (FileNotFoundException e){

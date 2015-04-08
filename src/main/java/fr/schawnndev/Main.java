@@ -32,7 +32,7 @@ import java.util.Random;
 public class Main extends JavaPlugin {
 
     public static Plugin instance;
-    @Getter
+    @Getter @Setter
     private static Game currentGame;
     @Getter @Setter
     private static Game defaultGame = new Game(0,0,0,null,null,0);
@@ -109,6 +109,12 @@ public class Main extends JavaPlugin {
                 if(player.hasPermission("poulet.stop") || player.isOp())
                     player.sendMessage("§6Stopping a game: §7/poulet stop");
 
+                if(player.hasPermission("poulet.setplayerspawn") || player.isOp())
+                    player.sendMessage("§6Setting playerspawn: §7/poulet setplayerspawn");
+
+                if(player.hasPermission("poulet.setbirdsspawn") || player.isOp())
+                    player.sendMessage("§6Setting birdspawn: §7/poulet setbirdsspawn");
+
                 player.sendMessage("§6Joining a game: §7/poulet join");
                 player.sendMessage("§6Quit a game: §7/poulet quit");
 
@@ -135,11 +141,49 @@ public class Main extends JavaPlugin {
                         return true;
                     }
 
+                } else if(args[0].equalsIgnoreCase("setplayerspawn")) {
+
+                    if (player.hasPermission("poulet.setplayerspawn") || player.isOp()) {
+                        player.sendMessage("§aSetting player spawn at " + LocationSerializer.locationToString(player.getLocation(), true));
+                        player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1.0F, 1.0F);
+
+                        try {
+                            FileManager.getCoordsConfig().set("playerSpawn", LocationSerializer.locationToString(player.getLocation(), true));
+                            FileManager.save();
+                        } catch (Exception e){
+                            player.sendMessage("§cErreur: " + e.getMessage());
+                            return true;
+                        }
+                    } else {
+                        player.sendMessage("§cYou don't have permission to use this command !");
+                        player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
+                        return true;
+                    }
+
+                } else if(args[0].equalsIgnoreCase("setbirdsspawn")) {
+
+                    if (player.hasPermission("poulet.setplayerspawn") || player.isOp()) {
+                        player.sendMessage("§aSetting player spawn at " + LocationSerializer.locationToString(player.getLocation(), true));
+                        player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1.0F, 1.0F);
+
+                        try {
+                            FileManager.getCoordsConfig().set("birdsSpawn", LocationSerializer.locationToString(player.getLocation(), true));
+                            FileManager.save();
+                        } catch (Exception e){
+                            player.sendMessage("§cErreur: " + e.getMessage());
+                            return true;
+                        }
+                    } else {
+                        player.sendMessage("§cYou don't have permission to use this command !");
+                        player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
+                        return true;
+                    }
+
                 } else if(args[0].equalsIgnoreCase("stop")){
 
                     if(player.hasPermission("poulet.stop") || player.isOp()) {
 
-                        if (getDefaultGame().isCurrentlyRunning()) {
+                        if (!getDefaultGame().isCurrentlyRunning()) {
                             player.sendMessage("§cThe game isn't running !");
                             player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
                             return true;
@@ -158,7 +202,7 @@ public class Main extends JavaPlugin {
 
                 } else if(args[0].equalsIgnoreCase("join")){
 
-                    if (getDefaultGame().isCurrentlyRunning()) {
+                    if (!getDefaultGame().isCurrentlyRunning()) {
                         player.sendMessage("§cThe game isn't running !");
                         player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
                         return true;
@@ -171,7 +215,7 @@ public class Main extends JavaPlugin {
 
                 } else if(args[0].equalsIgnoreCase("quit")){
 
-                    if (getDefaultGame().isCurrentlyRunning()) {
+                    if (!getDefaultGame().isCurrentlyRunning()) {
                         player.sendMessage("§cThe game isn't running !");
                         player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
                         return true;

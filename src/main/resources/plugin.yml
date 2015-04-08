@@ -1,0 +1,7 @@
+name: Poulet
+main: fr.schawnndev.Main
+version: 1.0
+author: SchawnnDev
+commands:
+  poulet:
+    description: Main command !
