@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
@@ -203,6 +204,12 @@ public class Game {
 
         winner = ((Points)playerPoints.toArray()[0]).getUuid();
 
+        for(UUID uuid : getPlayersPlaying())
+        {
+            Player player = Bukkit.getPlayer(uuid);
+            player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1.0F, 1.0F);
+        }
+
         Bukkit.broadcastMessage(Main.getPrefix() + "§c" + Bukkit.getPlayer(getWinner()).getName() + " §ahas won the game with §c" + getPlayerPoints().get(GameManager.getIntLocationInList(getWinner(), getPlayerPoints())).getPoints() + "§a birds killed!");
 
         GameManager.broadcastMessageInCurrentGame("§3Thanks for playing game Poulet !");
@@ -257,6 +264,12 @@ public class Game {
 
         GameManager.broadcastMessageInCurrentGame("§6You have §c" + time / 20 + "§6 seconds for kill all the chickens !");
 
+        for(UUID uuid : getPlayersPlaying())
+        {
+            Player player = Bukkit.getPlayer(uuid);
+            player.playSound(player.getLocation(), Sound.CAT_MEOW, 1.0F, 1.0F);
+        }
+
 
        currentTaskInt = Bukkit.getScheduler().runTaskTimer(Main.instance, new Runnable() {
 
@@ -266,7 +279,13 @@ public class Game {
            public void run() {
                if (currentBirds > getBirdsPerManche()) {
 
-                   GameManager.broadcastMessageInCurrentGame("§6Manche §c" + getCurrentManche() + " is finished !");
+                   GameManager.broadcastMessageInCurrentGame("§6Manche §c" + getCurrentManche() + " §6is finished !");
+
+                   for(UUID uuid : getPlayersPlaying())
+                   {
+                       Player player = Bukkit.getPlayer(uuid);
+                       player.playSound(player.getLocation(), Sound.GHAST_SCREAM, 1.0F, 1.0F);
+                   }
 
                    Collections.sort(playerPoints, new PointsComparator());
 

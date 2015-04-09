@@ -58,7 +58,7 @@ public class GameListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e){
         if(e.getAction() == Action.RIGHT_CLICK_AIR && Main.getCurrentGame().isCurrentlyRunning() && Main.getCurrentGame().getPlayersPlaying().contains(e.getPlayer().getUniqueId())) {
-            if (e.getItem().hasItemMeta() && e.getItem().getItemMeta().hasDisplayName() && e.getItem().getItemMeta().getDisplayName().equals(GameManager.getFireLaserWeapon().getItemName())) {
+            if (e.getItem().hasItemMeta() && e.getItem().getItemMeta().hasDisplayName() && e.getItem().getItemMeta().getDisplayName().equals(GameManager.getFireLaserWeapon().getItemName()) && !cooldown.contains(e.getPlayer().getUniqueId())) {
                 GameManager.getFireLaserWeapon().shoot(e.getPlayer());
                 final UUID uuid = e.getPlayer().getUniqueId();
                 cooldown.add(uuid);
@@ -71,7 +71,7 @@ public class GameListener implements Listener {
                     }
 
                 }, GameManager.getFireLaserWeapon().getSecondsBetweenUses() * 20);
-            } else if (e.getItem().hasItemMeta() && e.getItem().getItemMeta().hasDisplayName() && e.getItem().getItemMeta().getDisplayName().equals(GameManager.getHeartLaserWeapon().getItemName())){
+            } else if (e.getItem().hasItemMeta() && e.getItem().getItemMeta().hasDisplayName() && e.getItem().getItemMeta().getDisplayName().equals(GameManager.getHeartLaserWeapon().getItemName())&& !cooldown.contains(e.getPlayer().getUniqueId())){
                 GameManager.getHeartLaserWeapon().shoot(e.getPlayer());
                 final UUID uuid = e.getPlayer().getUniqueId();
                 cooldown.add(uuid);

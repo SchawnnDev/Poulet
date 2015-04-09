@@ -74,13 +74,13 @@ public class Main extends JavaPlugin {
 
         birdsLocations.add(middleBirdsSpawn);
 
-        for(int i = 0; i < 10; i+=2){
-            birdsLocations.add(middleBirdsSpawn.clone().add(0.0, 0.0, i));
-            birdsLocations.add(middleBirdsSpawn.clone().add(0.0, 0.0, -i));
+        for(int i = 0; i < 10; i+=3){
+            birdsLocations.add(middleBirdsSpawn.clone().add(i, 0.0, 0.0));
+            birdsLocations.add(middleBirdsSpawn.clone().add(-i, 0.0, 0.0));
         }
 
 
-        defaultGame = new Game(1, 2, 35, playerSpawn, birdsLocations, 5);
+        defaultGame = new Game(1, 5, 35, playerSpawn, birdsLocations, 10);
 
         // > Commands < //
 

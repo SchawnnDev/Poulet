@@ -44,7 +44,7 @@ public class HeartLaser extends Weapon {
                         ((Chicken)p2).damage(10000000);
                         Main.getCurrentGame().getPoints(player.getUniqueId()).addPoint();
                         player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-                        player.sendMessage("§a+1 point !");
+                        player.sendMessage(Main.getPrefix() + "§a+1 point !");
                         Main.getCurrentGame().getBirds().remove(p2);
                         return;
                     }

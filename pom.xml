@@ -9,7 +9,7 @@
     <version>1.0</version>
 
     <scm>
-        <connection>scm:git:git@git.uhcwork.net:schawnndev/poulet.git</connection>
+        <connection>scm:git:git@github.com:pauldu671/Poulet.git</connection>
     </scm>
 
     <dependencies>
@@ -30,19 +30,9 @@
             <artifactId>lombok</artifactId>
             <version>1.12.6</version>
             <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/lombok.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft.server.v1_8_R1</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.8</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/spigot-1.8-R0.1-SNAPSHOT.jar</systemPath>
-            <optional>true</optional>
         </dependency>
     </dependencies>
-    
+
     <build>
         <defaultGoal>clean install</defaultGoal>
         <finalName>${project.name}</finalName>

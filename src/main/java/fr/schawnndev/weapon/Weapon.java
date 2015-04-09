@@ -1,5 +1,6 @@
 package fr.schawnndev.weapon;
 
+import fr.schawnndev.Main;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -42,6 +43,7 @@ public abstract class Weapon {
      */
 
     public void giveItem(Player player) {
+        player.sendMessage(Main.getPrefix() + "§aYou received the " + itemName + " §a!");
         player.getInventory().addItem(this.item);
     }
 
