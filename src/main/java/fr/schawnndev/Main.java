@@ -11,6 +11,8 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -78,7 +80,7 @@ public class Main extends JavaPlugin {
         }
 
 
-        defaultGame = new Game(1, 5, 35, playerSpawn, birdsLocations, 5);
+        defaultGame = new Game(1, 2, 35, playerSpawn, birdsLocations, 5);
 
         // > Commands < //
 
@@ -90,6 +92,10 @@ public class Main extends JavaPlugin {
     public void onDisable() {
 
     }
+
+    /**
+     * <ul>Commands..</ul>
+     */
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -191,7 +197,7 @@ public class Main extends JavaPlugin {
                             return true;
                         } else {
                             player.sendMessage("§aStopping game....");
-                            getDefaultGame().stop();
+                            getDefaultGame().stop(true);
                             player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1.0F, 1.0F);
                             return true;
                         }
@@ -209,6 +215,10 @@ public class Main extends JavaPlugin {
                         player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
                         return true;
                     } else {
+                        if(getDefaultGame().getPlayersPlaying().contains(player.getUniqueId())){
+                            player.sendMessage("§cYou're already in the game !");
+                            return true;
+                        }
                         player.sendMessage("§aJoining game....");
                         getDefaultGame().addPlayer(player.getUniqueId());
                         player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1.0F, 1.0F);
@@ -222,6 +232,10 @@ public class Main extends JavaPlugin {
                         player.playSound(player.getLocation(), Sound.VILLAGER_NO, 1.0F, 1.0F);
                         return true;
                     } else {
+                        if(!getDefaultGame().getPlayersPlaying().contains(player.getUniqueId())){
+                            player.sendMessage("§cYou're not in the game !");
+                            return true;
+                        }
                         getDefaultGame().removePlayer(player.getUniqueId());
                         player.sendMessage("§aYou left the game !");
                         player.playSound(player.getLocation(), Sound.VILLAGER_YES, 1.0F, 1.0F);
@@ -230,6 +244,11 @@ public class Main extends JavaPlugin {
 
                 }
             } else {
+                for(Entity e : player.getWorld().getEntities()) {
+                    if(e instanceof Chicken) {
+                        ((Chicken) e).damage(10000000);
+                    }
+                }
                 player.sendMessage("§cToo many args !");
                 return true;
             }

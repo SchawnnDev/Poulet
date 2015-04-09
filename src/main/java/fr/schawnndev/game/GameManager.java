@@ -60,7 +60,7 @@ public class GameManager {
         for(UUID uuid : Main.getCurrentGame().getPlayersPlaying()) {
             if (uuid != null) {
                 Player p = Bukkit.getPlayer(uuid);
-                p.sendMessage(message);
+                p.sendMessage(Main.getPrefix() + message);
             }
         }
     }

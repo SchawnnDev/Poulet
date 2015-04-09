@@ -3,11 +3,13 @@ package fr.schawnndev.listeners;
 import fr.schawnndev.Main;
 import fr.schawnndev.game.GameManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -28,6 +30,8 @@ public class GameListener implements Listener {
     public void onQuit(PlayerQuitEvent e){
         if(Main.getCurrentGame().isCurrentlyRunning() && Main.getCurrentGame().getPlayersPlaying().contains(e.getPlayer().getUniqueId()))
             Main.getCurrentGame().removePlayer(e.getPlayer().getUniqueId());
+            e.getPlayer().getInventory().clear();
+            e.getPlayer().getInventory().setArmorContents(null);
     }
 
     @EventHandler
@@ -41,6 +45,14 @@ public class GameListener implements Listener {
     public void onEntityDamage(EntityDamageByEntityEvent e){
         if(e.getEntity() instanceof Player && Main.getCurrentGame().isCurrentlyRunning() && Main.getCurrentGame().getPlayersPlaying().contains(e.getEntity().getUniqueId()))
             e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e){
+        if(e.getEntity() instanceof Chicken && e.getEntity().hasMetadata("poulet")){
+            e.getDrops().clear();
+            e.setDroppedExp(0);
+        }
     }
 
     @EventHandler
