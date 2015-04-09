@@ -45,8 +45,8 @@ public class GameManager {
         fireLaser.setItemMeta(fireLaserMeta);
         heartLaser.setItemMeta(hearthLaserMeta);
 
-        heartLaserWeapon = new HeartLaser(heartLaser, "§dHearthLaser", 1, null);
-        fireLaserWeapon = new FireLaser(fireLaser, "§dFireLaser", 1, null);
+        heartLaserWeapon = new HeartLaser(heartLaser, "§dHearthLaser", 2, null);
+        fireLaserWeapon = new FireLaser(fireLaser, "§dFireLaser", 2, null);
     }
 
     public static void broadcastMessage(Game game, String message){

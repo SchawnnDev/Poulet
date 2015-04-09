@@ -102,9 +102,19 @@ public class Game {
         Bukkit.broadcastMessage(Main.getPrefix() + "§7A game with §c" + getManches() + " manches §7will start in 20 seconds !");
         Bukkit.broadcastMessage(Main.getPrefix() + "§7Type §c/poulet join §7to join the game !");
 
-        for(UUID uuid : getPlayersPlaying())
-            playerPoints.add(new Points(uuid, 0));
+        for(UUID uuid : getPlayersPlaying()) {
+            Player player = Bukkit.getPlayer(uuid);
 
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(null);
+
+            if(r.nextInt(2) == 1)
+                GameManager.getHeartLaserWeapon().giveItem(player);
+            else
+                GameManager.getFireLaserWeapon().giveItem(player);
+
+            playerPoints.add(new Points(uuid, 0));
+        }
         taskIdList.add(Bukkit.getScheduler().runTaskTimer(Main.instance, new Runnable() {
 
             @Override
@@ -116,10 +126,25 @@ public class Game {
                 if (!isMancheCurrentlyRunning) {
                     startManche();
                 }
+
+                for(Entity e : getBirds())
+                    if(!e.isDead() && e.isOnGround())
+                        e.remove();
+
             }
 
         }, 20 * 10, 20L).getTaskId());
 
+    }
+
+    /**
+     * <ul>Get points</ul>
+     */
+
+    public Points getPoints(UUID uuid){
+        for(Points points : getPlayerPoints())
+            if(points.getUuid() == uuid) return points;
+        return null;
     }
 
     /**

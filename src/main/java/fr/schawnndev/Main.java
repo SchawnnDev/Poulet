@@ -3,6 +3,7 @@ package fr.schawnndev;
 import fr.schawnndev.files.FileManager;
 import fr.schawnndev.game.Game;
 import fr.schawnndev.game.GameManager;
+import fr.schawnndev.listeners.GameListener;
 import fr.schawnndev.utils.LocationSerializer;
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +60,7 @@ public class Main extends JavaPlugin {
         // > Inits. < //
 
         GameManager.initWeapons();
+        getServer().getPluginManager().registerEvents(new GameListener(), this);
 
         // > Game < //
 
