@@ -2,6 +2,7 @@ package fr.schawnndev.game;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
@@ -23,6 +24,10 @@ public class Points {
 
     public void addPoint(){
         points++;
+
+        if(Bukkit.getPlayer(uuid) != null)
+            Bukkit.getPlayer(uuid).setLevel(points);
+
     }
 
     public void removePoint(){

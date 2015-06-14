@@ -33,7 +33,7 @@ public class HeartLaser extends Weapon {
         int maxDistance = 15;
         double distanceEntreParticle = 1.0;
 
-        Vector playerDirection = player.getLocation().getDirection();
+        Vector playerDirection = player.getLocation().subtract(0d, 0.5d, 0d).getDirection();
         Location lastParticleLocation = new Location(player.getWorld(), player.getEyeLocation().getX(), player.getEyeLocation().getY(), player.getEyeLocation().getZ());
         for (int i = 0; i < maxDistance / distanceEntreParticle; i++) {
             new UtilParticle(UtilParticle.Particle.HEART, 0.0D, 1, 0.0001D).sendToLocation(lastParticleLocation);
@@ -41,11 +41,10 @@ public class HeartLaser extends Weapon {
             for (Entity p2 : player.getWorld().getEntities()) {
                 if (p2.getLocation().distance(lastParticleLocation) < 1) {
                     if(p2 instanceof Chicken && p2.hasMetadata("poulet")){
-                        ((Chicken)p2).damage(10000000);
                         Main.getCurrentGame().getPoints(player.getUniqueId()).addPoint();
-                        player.playSound(player.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-                        player.sendMessage(Main.getPrefix() + "§a+1 point !");
+                        player.playSound(player.getLocation(), Sound.NOTE_PLING, 1.0F, 1.0F);
                         Main.getCurrentGame().getBirds().remove(p2);
+                        p2.remove();
                         return;
                     }
                 }

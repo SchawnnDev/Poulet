@@ -1,14 +1,12 @@
 package fr.schawnndev.game;
 
 import fr.schawnndev.Main;
+import fr.schawnndev.utils.Fireworks;
 import fr.schawnndev.weapon.Weapon;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -151,13 +149,13 @@ public class Game {
                 for (Entity e : ((Player)Bukkit.getOnlinePlayers().toArray()[0]).getWorld().getEntities()) {
                     if (e instanceof Chicken && e.hasMetadata("poulet") && !e.isDead() && e.isOnGround()) {
                         getBirds().remove(e);
-                        ((Chicken)e).damage(100000);
+                        e.remove();
                     }
                 }
 
             }
 
-        }, 20 * 10, 20L).getTaskId();
+        }, 20 * 10, 10L).getTaskId();
 
     }
 
@@ -201,16 +199,41 @@ public class Game {
     public void finish(){
 
         Collections.sort(playerPoints, new PointsComparator());
+        Collections.reverse(playerPoints);
 
         winner = ((Points)playerPoints.toArray()[0]).getUuid();
 
         for(UUID uuid : getPlayersPlaying())
         {
             Player player = Bukkit.getPlayer(uuid);
+            player.setLevel(0);
             player.playSound(player.getLocation(), Sound.CHEST_OPEN, 1.0F, 1.0F);
         }
 
         Bukkit.broadcastMessage(Main.getPrefix() + "§c" + Bukkit.getPlayer(getWinner()).getName() + " §ahas won the game with §c" + getPlayerPoints().get(GameManager.getIntLocationInList(getWinner(), getPlayerPoints())).getPoints() + "§a birds killed!");
+
+        Bukkit.getScheduler().runTaskTimer(Main.instance, new BukkitRunnable() {
+
+            int counter = 0;
+            @Override
+            public void run() {
+                if(counter >= 100){
+                    cancel();
+                    return;
+                }
+
+                for(Location location : birdsSpawnLocations) {
+                    int random = r.nextInt(4);
+                    Fireworks.fireFirework(location.clone().add(0d, random + 2, 0d), random == 1 ? Color.BLUE : random == 2 ? Color.BLACK : random == 3 ? Color.RED : random == 4 ? Color.ORANGE : Color.GREEN);
+                }
+
+                counter+=20;
+
+            }
+
+        }, 0L, 20L);
+
+
 
         GameManager.broadcastMessageInCurrentGame("§3Thanks for playing game Poulet !");
 
@@ -260,7 +283,7 @@ public class Game {
         currentManche++;
 
 
-        GameManager.broadcastMessageInCurrentGame("§6Starting " + (((getCurrentManche() == getManches()) ? "§blatest§6" : "")) + " manche §c(" + getCurrentManche() + ")§6....");
+        GameManager.broadcastMessageInCurrentGame("§6Starting " + (((getCurrentManche() == getManches()) ? "§blast§6" : "")) + " manche §c(" + getCurrentManche() + ")§6....");
 
         GameManager.broadcastMessageInCurrentGame("§6You have §c" + time / 20 + "§6 seconds for kill all the chickens !");
 
@@ -288,6 +311,7 @@ public class Game {
                    }
 
                    Collections.sort(playerPoints, new PointsComparator());
+                   Collections.reverse(playerPoints);
 
                     GameManager.broadcastMessageInCurrentGame("§6Ranking: §31 = §c" + Bukkit.getPlayer(((Points)playerPoints.toArray()[0]).getUuid()).getName()
                             + "§3 | 2 = §c" +( getPlayersPlaying().size() >= 2 ? Bukkit.getPlayer(((Points)playerPoints.toArray()[1]).getUuid()).getName() : "nobody")
