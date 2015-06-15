@@ -1,7 +1,19 @@
+/*
+ * ******************************************************
+ *  * Copyright (C) 2015 SchawnnDev <contact@schawnndev.fr>
+ *  *
+ *  * This file (fr.schawnndev.files.FileManager) is part of Poulet.
+ *  *
+ *  * Created by SchawnnDev on 14/06/15 22:14.
+ *  *
+ *  * Poulet can not be copied and/or distributed without the express
+ *  * permission of SchawnnDev.
+ *  ******************************************************
+ */
+
 package fr.schawnndev.files;
 
 import fr.schawnndev.Main;
-import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

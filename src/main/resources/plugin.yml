@@ -5,3 +5,5 @@ author: SchawnnDev
 commands:
   poulet:
     description: Main command !
+  chest:
+    description: Vite fait

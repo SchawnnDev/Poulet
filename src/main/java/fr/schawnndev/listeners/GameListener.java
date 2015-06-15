@@ -10,9 +10,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
@@ -32,6 +34,16 @@ public class GameListener implements Listener {
             Main.getCurrentGame().removePlayer(e.getPlayer().getUniqueId());
             e.getPlayer().getInventory().clear();
             e.getPlayer().getInventory().setArmorContents(null);
+    }
+
+    @EventHandler
+    public void onWeather(WeatherChangeEvent e){
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onFood(FoodLevelChangeEvent e){
+        e.setFoodLevel(20);
     }
 
     @EventHandler

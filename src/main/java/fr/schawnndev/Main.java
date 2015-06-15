@@ -7,18 +7,25 @@ import fr.schawnndev.listeners.GameListener;
 import fr.schawnndev.utils.LocationSerializer;
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Chest;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Chicken;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -93,12 +100,101 @@ public class Main extends JavaPlugin {
 
     }
 
+    private List<ItemStack> getRandomItemStacks(Random random, boolean fullRandom){
+        List<ItemStack> itemStacks = new ArrayList<>();
+
+        if(fullRandom) {
+
+            int fullR = random.nextInt(60);
+
+            if(fullR == 23)
+                itemStacks.add(new ItemStack(Material.DIAMOND, (random.nextInt(500) == 45 ? 2 : 1)));
+
+            int r = random.nextInt(20);
+
+            for(int i = 0; i < r; i++){
+                int material = i + random.nextInt(250);
+                Material m = Material.getMaterial(material);
+
+                if(m != null && m != Material.DIAMOND && material != 60 && material != 138  && m != Material.DIAMOND_BLOCK  && m != Material.GOLD_BLOCK  && m != Material.REDSTONE_BLOCK && m != Material.COAL_BLOCK)
+                    itemStacks.add(new ItemStack(m, random.nextInt(20)+1));
+
+            }
+
+        } else {
+
+        }
+
+        return itemStacks;
+    }
+
     /**
      * <ul>Commands..</ul>
      */
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if(cmd.getName().equalsIgnoreCase("chest")){
+
+            if(!(sender instanceof Player)){
+                sender.sendMessage("§cThe command sender must be a player !");
+                return true;
+            }
+
+            Player player = (Player)sender;
+
+            if(args.length == 0){
+                player.sendMessage("§cCorrect usage: §f/chest <number> <x max random> <y max random>");
+                return true;
+            } else if (args.length == 3){
+                int chests;
+                int xmaxrandom;
+                int ymaxrandom;
+
+                try {
+                    chests = Integer.parseInt(args[0]);
+                    xmaxrandom = Integer.parseInt(args[1]);
+                    ymaxrandom = Integer.parseInt(args[2]);
+                } catch (NumberFormatException e){
+                    player.sendMessage("§cCorrect usage: §f/chest <int> <int> <int>");
+                    return true;
+                }
+
+                Random r = new Random();
+
+                for(int i = 0; i < chests; i++){
+
+                    int x = player.getLocation().getBlockX()+r.nextInt(xmaxrandom) * (r.nextBoolean() ? 1 : -1),
+                    z = player.getLocation().getBlockZ()+r.nextInt(ymaxrandom) * (r.nextBoolean() ? 1 : -1),
+                    y = player.getWorld().getHighestBlockYAt(x, z);
+                    player.getWorld().getBlockAt(x, y, z).setType(Material.CHEST);
+                    Chest chest = (Chest)player.getWorld().getBlockAt(x, y, z).getState();
+
+                    if(chest != null){
+
+                        for(ItemStack itemStack : getRandomItemStacks(r, true))
+                            chest.getInventory().addItem(itemStack);
+
+                        chest.update(true);
+
+                        DecimalFormat df = new DecimalFormat("##.#");
+
+                        Bukkit.broadcastMessage("§2Nouveau coffre en X: " + df.format(chest.getLocation().getX())
+                        + " | Y: " + df.format(chest.getLocation().getY()) + " | Z: " + df.format(chest.getLocation().getZ()));
+
+                    }
+
+
+                }
+
+
+            }
+
+
+
+        }
+
 
         if(cmd.getName().equalsIgnoreCase("poulet")){
 
