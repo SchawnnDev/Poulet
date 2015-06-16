@@ -13,9 +13,11 @@
 
 package fr.schawnndev.particles;
 
+import fr.schawnndev.Main;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,45 +31,75 @@ public class ParticleCube {
     private List<Location> locations;
 
     @Getter
-    private Location location;
+    private Location startLocation;
 
-    public ParticleCube(Location location, int xLength, int yLength, int zLength){
+    @Getter
+    private boolean stopped;
+
+    public ParticleCube(Location startLocation, int xLength, int yLength, int zLength){
         this.locations = new ArrayList<>();
         this.xLength = xLength;
         this.yLength = yLength;
         this.zLength = zLength;
-        this.location = location;
+        this.startLocation = startLocation;
+        this.stopped = false;
+
+        calculate();
     }
 
     private void calculate(){
+
+        System.out.println("Starting cube calculating with x: " + xLength + " y: " + yLength + " z: " + zLength);
+        long current = System.currentTimeMillis();
+
         for(double x = 0d; x <= zLength; x+=0.1){
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
+            locations.add(startLocation.clone().add(x, 0d, 0d));
+            locations.add(startLocation.clone().add(x, yLength, 0d));
+            locations.add(startLocation.clone().add(x, 0d, zLength));
+            locations.add(startLocation.clone().add(x, yLength, zLength));
         }
 
         for(double y = 0d; y <= zLength; y+=0.1){
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
-            locations.add(location.clone().add(0d, 0d, 0d));
+            locations.add(startLocation.clone().add(0d, y, 0d));
+            locations.add(startLocation.clone().add(xLength, y, 0d));
+            locations.add(startLocation.clone().add(0d, y, zLength));
+            locations.add(startLocation.clone().add(xLength, y, zLength));
         }
 
         for(double z = 0d; z <= zLength; z+=0.1){
-            locations.add(location.clone().add(0, 0d, z));
-            locations.add(location.clone().add(0d, 5d, z));
-            locations.add(location.clone().add(4d, 0d, z));
-            locations.add(location.clone().add(4d, 5d, z));
+            locations.add(startLocation.clone().add(0, 0d, z));
+            locations.add(startLocation.clone().add(0d, yLength, z));
+            locations.add(startLocation.clone().add(xLength, 0d, z));
+            locations.add(startLocation.clone().add(xLength, yLength, z));
         }
+
+        System.out.println("Cube calculating finished ! Time: " + (System.currentTimeMillis()-current) + " ms");
+        System.out.println("A total of " + locations.size() + " locations were calculated !");
 
     }
 
     public void start(){
+        new BukkitRunnable(){
 
+            @Override
+            public void run() {
+                if(stopped){
+                    cancel();
+                    return;
+                }
+
+                for(Location location : getLocations())
+                    new UtilParticle(UtilParticle.Particle.FLAME, 0.0D, 1, 0.0001D).sendToLocation(location);
+
+
+            }
+
+        }.runTaskTimer(Main.instance, 0L, 2L);
     }
 
-    public void stop(){}
+    public void stop(){
+        this.stopped = true;
+    }
 
 
 }
