@@ -94,7 +94,7 @@ public class ParticleCube {
 
             }
 
-        }.runTaskTimer(Main.instance, 0L, 2L);
+        }.runTaskTimer(Main.instance, 0L, 5L);
     }
 
     public void stop(){
