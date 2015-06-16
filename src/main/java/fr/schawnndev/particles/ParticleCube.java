@@ -25,7 +25,7 @@ import java.util.List;
 public class ParticleCube {
 
     @Getter @Setter
-    private int xLength, yLength, zLength;
+    private double xLength, yLength, zLength;
 
     @Getter
     private List<Location> locations;
@@ -36,7 +36,7 @@ public class ParticleCube {
     @Getter
     private boolean stopped;
 
-    public ParticleCube(Location startLocation, int xLength, int yLength, int zLength){
+    public ParticleCube(Location startLocation, double xLength, double yLength, double zLength){
         this.locations = new ArrayList<>();
         this.xLength = xLength;
         this.yLength = yLength;
@@ -52,14 +52,14 @@ public class ParticleCube {
         System.out.println("Starting cube calculating with x: " + xLength + " y: " + yLength + " z: " + zLength);
         long current = System.currentTimeMillis();
 
-        for(double x = 0d; x <= zLength; x+=0.1){
+        for(double x = 0d; x <= xLength; x+=0.1){
             locations.add(startLocation.clone().add(x, 0d, 0d));
             locations.add(startLocation.clone().add(x, yLength, 0d));
             locations.add(startLocation.clone().add(x, 0d, zLength));
             locations.add(startLocation.clone().add(x, yLength, zLength));
         }
 
-        for(double y = 0d; y <= zLength; y+=0.1){
+        for(double y = 0d; y <= yLength; y+=0.1){
             locations.add(startLocation.clone().add(0d, y, 0d));
             locations.add(startLocation.clone().add(xLength, y, 0d));
             locations.add(startLocation.clone().add(0d, y, zLength));

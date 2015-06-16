@@ -4,6 +4,7 @@ import fr.schawnndev.files.FileManager;
 import fr.schawnndev.game.Game;
 import fr.schawnndev.game.GameManager;
 import fr.schawnndev.listeners.GameListener;
+import fr.schawnndev.particles.ParticleCube;
 import fr.schawnndev.utils.LocationSerializer;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -134,6 +136,53 @@ public class Main extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+        if(cmd.getName().equalsIgnoreCase("cube")) {
+
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("§cThe command sender must be a player !");
+                return true;
+            }
+
+            Player player = (Player) sender;
+
+            if (args.length == 0) {
+                player.sendMessage("§cCorrect usage: §f/cube <xLength> <yLength> <zLength>");
+                return true;
+            } else if (args.length == 3) {
+                double xLength, yLength, zLength;
+
+                try {
+                    xLength = Double.parseDouble(args[0]);
+                    yLength = Double.parseDouble(args[1]);
+                    zLength = Double.parseDouble(args[2]);
+                } catch (NumberFormatException e) {
+                    player.sendMessage("§cCorrect usage: §f/cube <double> <double> <double>");
+                    return true;
+                }
+
+                if(xLength != 0 && yLength != 0 && zLength != 0){
+
+                    final ParticleCube cube = new ParticleCube(player.getLocation().add(0d, 2d,0d), xLength, yLength, zLength);
+                    cube.start();
+
+                    new BukkitRunnable(){
+
+                        @Override
+                        public void run() {
+                            if(cube != null && !cube.isStopped())
+                                cube.stop();
+                        }
+
+                    }.runTaskLater(this, 20 * 60 * 30);
+
+                } else {
+                    player.sendMessage("§cCorrect usage: §f/cube <double> <double> <double> §c| §fNot 0 !!");
+                    return true;
+                }
+
+            }
+        }
 
         if(cmd.getName().equalsIgnoreCase("chest")){
 
